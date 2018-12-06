@@ -1,5 +1,7 @@
-/target
-/.idea
+**/target
+**/.idea
 *.iml
 *.ipr
 *.iws
+**/build
+**/node_modules
