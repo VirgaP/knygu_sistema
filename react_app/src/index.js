@@ -13,6 +13,7 @@ import Form from './Form/FormComponent';
 import HomePage from './HomePage';
 import cardList from './Layout/MainPage/Card/CardListComponent';
 import Card from './Layout/MainPage/Card/Card';
+import CardContainer from './Layout/MainPage/Card/CardContainer';
 
 ReactDOM.render((
     <BrowserRouter>
@@ -22,7 +23,9 @@ ReactDOM.render((
                 <Route path="/products" component={ProductsList}/>
                 <Route path="/cart" component={CartPage}/> 
                 <Route path="/admin" component={Form}/>
-                <Route path="/product/:productId" component={Card}/>
+                {/* <Route path="/product/:productId" component={Card}/> */}
+                {/* <Route path="/product/:productId" component={CardContainer}/> */}
+                <Route path="/product/:productId" render={(props) => <CardContainer {...props} />}/> 
                 <Route path="*" component={Nowhere}/>   
             </Switch>
         </NavbarContainer>

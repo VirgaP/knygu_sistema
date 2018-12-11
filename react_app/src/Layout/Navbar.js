@@ -44,13 +44,13 @@ class Navbar extends Component {
                   </Link> 
                 </li>
                 <li>
-                {
+                {/* {
                   this.state.products.map(product => (
                     <div key={product.id}>
                         <Link to={`/product/${product.id}`}>{product.id}</Link>
                     </div>
                 ))
-                }
+                } */}
                 </li>
                 {/* <li className="nav-item">
                   <a className="nav-link" onClick={this.goProducts} href="/products">Products</a>
