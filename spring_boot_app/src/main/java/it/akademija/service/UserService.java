@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     @Autowired
-    @Qualifier("DBUserDAO")
+    @Qualifier("dbUser")
     private UserDao userDao; //atiduoda user is duomenu bazes
 
     @Transactional
@@ -44,9 +44,6 @@ public class UserService {
                 );
         userDao.createUser(userServiceDTO);
     }
-
-
-
 
     @Transactional
     public void deleteUser(String username){

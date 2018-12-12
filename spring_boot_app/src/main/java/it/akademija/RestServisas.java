@@ -1,18 +1,12 @@
 package it.akademija;
 
-import it.akademija.model.Product;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class RestServisas {
 
 //    @Autowired
-//    List<Product> products;
+//    List<ProductDTO> products;
 //
 ////    @RequestMapping("/productsCollection")
 ////    public String getProductsCollection(){
@@ -21,7 +15,7 @@ public class RestServisas {
 ////        return allProducts;
 ////    }
 //    @RequestMapping("/productsCollection")
-//    public List<Product> getProductsCollection(){
+//    public List<ProductDTO> getProductsCollection(){
 //        return products
 //                .stream()
 //                .collect(Collectors.toList());

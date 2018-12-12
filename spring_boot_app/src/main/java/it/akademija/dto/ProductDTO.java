@@ -1,33 +1,34 @@
-package it.akademija.model;
+package it.akademija.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
+import javax.persistence.Column;
 import java.math.BigDecimal;
 
-//@Resource(name = "product")
-//@Data
-//@AllArgsConstructor
-public class Product {
+public class ProductDTO {
+    private Long id;
 
-    private static final Logger LOG = LoggerFactory.getLogger(Product.class);
-    private Integer id;
+    private Integer product_No;
+
     private String image_url;
-    private Double price;
-    private String category;
-    private String brand;
-    private String description;
-    private Integer rating;
-    private Integer quantity;
-    private Boolean inStock;
 
-    public Product(Integer id, String image_url, Double price, String category, String brand, String description, Integer rating, Integer quantity, Boolean inStock) {
+    private BigDecimal price;
+
+    private String category;
+
+    private String brand;
+
+    private String description;
+
+    private Integer rating;
+
+    private Integer quantity;
+
+
+    public ProductDTO() {
+    }
+
+    public ProductDTO(Long id, Integer product_No, String image_url, BigDecimal price, String category, String brand, String description, Integer rating, Integer quantity) {
         this.id = id;
+        this.product_No = product_No;
         this.image_url = image_url;
         this.price = price;
         this.category = category;
@@ -35,15 +36,22 @@ public class Product {
         this.description = description;
         this.rating = rating;
         this.quantity = quantity;
-        this.inStock = inStock;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getProduct_No() {
+        return product_No;
+    }
+
+    public void setProduct_No(Integer product_No) {
+        this.product_No = product_No;
     }
 
     public String getImage_url() {
@@ -54,11 +62,11 @@ public class Product {
         this.image_url = image_url;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -100,28 +108,5 @@ public class Product {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    public Boolean getInStock() {
-        return inStock;
-    }
-
-    public void setInStock(Boolean inStock) {
-        this.inStock = inStock;
-    }
-
-    @PostConstruct
-    public void init() {
-        LOG.info("Product PostConstruct");
-    }
-
-    @PreDestroy
-    public void destroy() {
-        LOG.info("Product PreDestroy");
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" + "id=" + id + ", image_url='" + image_url + '\'' + ", price=" + price + ", category='" + category + '\'' + ", brand='" + brand + '\'' + ", description='" + description + '\'' + ", rating=" + rating + ", quantity=" + quantity + ", inStock=" + inStock + '}';
     }
 }

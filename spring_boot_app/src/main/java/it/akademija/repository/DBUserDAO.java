@@ -1,5 +1,6 @@
-package it.akademija.dao;
+package it.akademija.repository;
 
+import it.akademija.dao.UserDao;
 import it.akademija.dto.UserServiceDTO;
 import it.akademija.entity.User;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Repository
 @Qualifier("dbUser")
-public class DBUserDAO implements UserDao{
+public class DBUserDAO implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;

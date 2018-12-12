@@ -1,57 +1,69 @@
 package it.akademija.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import it.akademija.dao.ProductDao;
-import it.akademija.dao.UserDao;
-import it.akademija.model.Product;
+import it.akademija.model.CreateProductCommand;
+import it.akademija.model.CreateUserCommand;
+import it.akademija.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/products")
 public class ProductController {
 
-    private final ProductDao productDao;
+    private final ProductService productService;
 
     @Autowired
-    public ProductController(ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @ApiOperation(value="Get list of products in databse", notes="Returns list of products from databse")
     @CrossOrigin(origins = "http://localhost:3000")
-    List<Product> getAllProducts(){
-        return productDao.getAllProducts();
+    List<CreateProductCommand> getAllProducts(){
+        return productService.getProducts();
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    @ApiOperation(value="Get a product", notes="Returns product users username, name, surname and by product number")
     @CrossOrigin(origins = "http://localhost:3000")
-    public Product getProduct(@PathVariable final Integer id){
-        return productDao.getProduct(id);
+    public CreateProductCommand getProduct(@PathVariable final Integer product_No){
+        return productService.findProduct(product_No);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     @CrossOrigin(origins = "http://localhost:3000")
+    @ApiOperation(value="Create product", notes = "Creates product with data from client")
     @ResponseStatus(HttpStatus.CREATED) //productData pasiimti is Client
-    void createProduct(Product product){
-        productDao.createProduct(product);
+    void createProduct(
+            @ApiParam(value="Product data", required=true)
+            @RequestBody final CreateProductCommand cmd){
+            productService.createProduct(cmd);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     @CrossOrigin(origins = "http://localhost:3000")
+    @ApiOperation(value="Get and update product", notes="Returns product by product number and updates")
     @ResponseStatus(HttpStatus.OK)
-    void updateProduct(Product product){
-        productDao.updateProduct(product);
+    void updateProduct(
+            @ApiParam(value="Product data", required=true)
+            @RequestBody final CreateProductCommand cmd){
+        productService.updateProduct(cmd.getProduct_No());
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(path = "/{product_No}", method = RequestMethod.DELETE)
     @CrossOrigin(origins = "http://localhost:3000")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteProduct(Integer id){
-        productDao.deleteProduct(id);
+    @ApiOperation(value="Delete product", notes="Deletes product user by product number")
+    void deleteProduct(@PathVariable final Integer product_No){
+        productService.deleProduct(product_No);
     }
+
+
 }

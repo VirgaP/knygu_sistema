@@ -1,10 +1,20 @@
 package it.akademija.model;
 
-public final class CreateUserCommand {
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
+public final class CreateUserCommand {
+    @NotNull
+    @Length(min = 3, message = "Username cannot be shorter than 3 caharcters")
     private String username;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @NotNull
+    @Email(message = "Field should be a valid email")
     private String email;
 
     public CreateUserCommand(String username, String firstName, String lastName, String email) {
