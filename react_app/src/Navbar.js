@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {cartArray} from '../Cart/CartBody';
-import UserProvider from '../UserProvider';
-import UserContext from '../UserContext';
+import UserProvider from './UserProvider';
+import UserContext from './UserContext';
 
 
 
