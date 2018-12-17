@@ -14,6 +14,8 @@ import HomePage from './HomePage';
 import cardList from './Layout/MainPage/Card/CardListComponent';
 import Card from './Layout/MainPage/Card/Card';
 import CardContainer from './Layout/MainPage/Card/CardContainer';
+import Register from './Layout/MainPage/Register';
+
 
 ReactDOM.render((
     <BrowserRouter>
@@ -21,11 +23,11 @@ ReactDOM.render((
             <Switch>
                 <Route exact path='/' component={HomePage}/>
                 <Route path="/products" component={ProductsList}/>
-                <Route path="/cart" component={CartPage}/> 
+                <Route path="/cart/:username" render={(props) => <CartPage {...props} />}/> 
                 <Route path="/admin" component={Form}/>
                 {/* <Route path="/product/:productId" component={Card}/> */}
-                {/* <Route path="/product/:productId" component={CardContainer}/> */}
-                <Route path="/product/:productId" render={(props) => <CardContainer {...props} />}/> 
+                <Route path="/register" component={Register}/>
+                <Route path="/product/:product_No" render={(props) => <CardContainer {...props} />}/> 
                 <Route path="*" component={Nowhere}/>   
             </Switch>
         </NavbarContainer>

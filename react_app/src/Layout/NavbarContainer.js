@@ -2,8 +2,11 @@ import React from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
+
 const NavbarContainer = (props) =>{
+    
     return(
+        
         <div>
             <div>
                 {/* <Navbar history={props.history}/> */}

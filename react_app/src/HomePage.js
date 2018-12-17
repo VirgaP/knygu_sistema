@@ -1,22 +1,27 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
-import Footer from './Layout/Footer';
 import SideBar from './Layout/MainPage/SideBar';
 import  {library} from '@fortawesome/fontawesome-svg-core';
 import { faStar, faShoppingCart, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import Carousel from './Layout/MainPage/Carousel';
 import CardListContainer from './Layout/MainPage/Card/FilteredCardListContaineir';
- 
+import UserContext from './UserContext'; 
+import ProductsListContainer from './Layout/MainPage/Card/ProductsListContainer';
+import axios from 'axios';
+import UserProvider from './UserProvider';
+import GetCartBtn from './Layout/MainPage/GetCartBtn';
 
 library.add(faStar, faShoppingCart, faTrashAlt);
 
 
-class HomePage extends Component {
+class HomePage extends Component {  
   constructor(props) {
     super(props)
     this.state = {
-       filterInput: ''
+       filterInput: '',
+       show: false, 
+       username: ''
     }
     this.handleFilterInputChange = this.handleFilterInputChange.bind(this);
   }
@@ -30,6 +35,7 @@ class HomePage extends Component {
   render() {
     
     return (
+      <UserProvider>
       <div className="body">  
         <div className="container">
           <div className="row">
@@ -39,15 +45,16 @@ class HomePage extends Component {
             />
               <div className="col-lg-9">
               <Carousel/>
+              <GetCartBtn/>
+              </div>
+              </div>
+              <div className="container-fluid">
+                <CardListContainer filterInput={this.state.filterInput} />
+                <ProductsListContainer/>
               </div>
           </div>
-            <div className="container-fluid">
-              <CardListContainer 
-              filterInput={this.state.filterInput} />
-            </div>
-          </div>
       </div>
-    
+      </UserProvider>
     );
   }
 }

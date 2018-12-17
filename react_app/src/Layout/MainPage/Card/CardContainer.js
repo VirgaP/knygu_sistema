@@ -2,21 +2,26 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import AddToCartButton from './AddToCartButton';
 import ProductsListContainer from './ProductsListContainer';
+import { Button } from 'antd';
+import 'antd/dist/antd.css';
+import UserContext from '../../../UserContext';
+import UserProvider from '../../../UserProvider';
+import AddToCartButton from './AddToCartButton';
 
 export default class CardContainer extends Component {
     constructor(props) {
       super(props)
         
       this.state = {
-         id: this.props.match.params.productId, //is index.js paima url paima productId
+         id: this.props.match.params.product_No, //is index.js paima url paima productId
          products: [],
          product: {},
-         item: {}
+         item: {},
+        
       }
       console.log("id", this.state.id);
-      console.log("propsa:", props)
+      console.log("propsai:", props)
     }
   
     componentDidMount = () => {
@@ -28,14 +33,36 @@ export default class CardContainer extends Component {
         .catch(function (error) {
           console.log(error);
         });
+      
+      
     }
 
+    DeleteItem = (event) => {
+        axios.delete(`http://localhost:8090/api/products/${this.state.id}`)
+        .then(result => {
+          const product = result.data
+        this.setState({product});
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        
+        this.props.history.push('/') //redirects Home after delete
+    }
+    
+
   render() {
-   console.log("params url: ", this.props.match.params.productId)
+   console.log("params url: ", this.props.match.params.product_No)
     return (
-   <div className="container" style={style}>
+        <UserProvider>
+        <UserContext.Consumer>
+           {(context)=> (  
+            <React.Fragment>  
+        <div style={username}>You are now shopping as : {context}</div>
+
+         <div className="container" style={style}>
          <div className="card h-100">
-            <a href="#"><img className="card-img-top" src={this.state.product.image_url} alt={this.state.product.brand}></img></a>
+            <a href="#"><img className="card-img-top" src="http://placehold.it/700x400" alt={this.state.product.image_url}></img></a>
             <div className="card-body">
                   <h4 className="card-title">
                   </h4>
@@ -48,10 +75,17 @@ export default class CardContainer extends Component {
               <p>Rating &nbsp;    
               {Array(this.state.product.rating).fill(<FontAwesomeIcon icon="star" color={'yellow'} />)}
               </p>
-                <AddToCartButton/>
+              <AddToCartButton context={context} product={this.state.product}/>
+               {/* <Button type="default" onClick={this.addToCart.bind(this)}> Add to cart </Button>  */}
+               &nbsp; &nbsp; 
+               <Button type="danger" onClick={this.DeleteItem.bind(this)}> Delete </Button>
             </div>
           </div>
         </div>
+            </React.Fragment> 
+                )}
+            </UserContext.Consumer>
+            </UserProvider>
     );
   }
 }
@@ -62,3 +96,8 @@ const style = {
     marginBottom:'20px',
     width: '70%'
   }
+  const username = {
+    border:'solid 1 px grey',
+    backgroundColor: 'yellow',
+}
+

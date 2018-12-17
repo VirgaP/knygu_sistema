@@ -7,8 +7,14 @@ import Sidebar from '../SideBar';
 import  newArray  from '../../../Form/FormComponent';
 import CardContainer from './CardContainer'
 import axios from 'axios';
+import UserContext from '../../../UserContext';
+import UserProvider from '../../../UserProvider';
+
 
 class ProductsListContainer extends Component {
+
+// static contextType = UserContext; //or at the bootom
+
   constructor(props) {
     super(props);
     this.state = {
@@ -19,35 +25,7 @@ class ProductsListContainer extends Component {
 
 componentDidMount(){  
    
-    // var myArray = [
-    //     {
-    //     id: 1,
-    //     image_url: "http://placehold.it/700x400",
-    //     price: 391,
-    //     category: "city bike",
-    //     brand: "Urbanbike",
-    //     gears: 5,
-    //     description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum",
-    //     size: "L",
-    //     rating: 4,
-    //     inStock: false
-    //     },
-    //     {
-    //         id: 1,
-    //         image_url: "http://placehold.it/700x400",
-    //         price: 1300,
-    //         category: "racing bike",
-    //         brand: "Specialized",
-    //         gears: 5,
-    //         description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum",
-    //         size: "L",
-    //         rating: 4,
-    //         inStock: false
-    //     }
-    //   ]
-    
-
-   axios.get('http://localhost:8090/api/products/')
+    axios.get('http://localhost:8090/api/products')
   .then(result => {
     const products = result.data;
     console.log('produktai su axios', products);
@@ -55,27 +33,46 @@ componentDidMount(){
   })
   .catch(function (error) {
     console.log(error);
-  });
-   
-      
+  }); 
+
 }
-    addToCart() { 
+
+addToCart() { 
         alert("item added to cart");
     }
 
- render(){
+render(){
     if(!this.state.products){
-        return <span>No products yet in cl container</span>
+        return <span>No products are available at the moment. Sorry ...</span>
     }
-        return(   
+    return(
+        <UserProvider>
         <div className="container">
+        <UserContext.Consumer>
+        {(context)=> (
+            
+            <div style={username}>You are now shopping as : {context}</div>
+        )}
+        </UserContext.Consumer>
+        <h2 style={style}>List of products</h2>
             {/* passing all products to cardcomponent, render under Products */}
-            <CardListComponent products={this.state.products}>
-            <AddToCartButton event={this.addToCart}/>
-            </CardListComponent>
-            {/* <CardContainer products={this.state.products}/>    */}
+            <CardListComponent value={this.context} products={this.state.products}>
+                    <AddToCartButton event={this.addToCart} />
+            </CardListComponent> 
         </div>
+        </UserProvider>
         )
     }
 } 
+
+const style ={
+    marginTop:'30px',
+    textAlign:'center'
+}
+const username = {
+    border:'solid 1 px grey',
+    backgroundColor: 'yellow',
+}
+
+// ProductsListContainer.contextType = UserContext
 export default ProductsListContainer;

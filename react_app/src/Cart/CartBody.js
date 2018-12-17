@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import ProductComponent from './ProductComponent';
 import CartProductList from './CartProductList';
 import UpdateCartBtn from './UpdateCartBtn';
+import axios from 'axios';
+import UserProvider from '../UserProvider';
+import UserContext from '../UserContext';
 
 export const cartArray = [
     {
@@ -31,17 +34,52 @@ export const cartArray = [
     }
 ]
 
+
 class CartBody extends Component {
+
+   
+    
+
+    // componentDidMount = () => {
+    
+    //     axios.get(`http://localhost:8090/api/cart/${this.props.context}`, {
+    //         // params: {
+    //         //   id: this.state.id
+    //         // }
+    //       })
+    //       .then(function (response) {
+    //         console.log(response);
+    //       })
+    //       .catch(function (error) {
+    //         console.log(error);
+    //       });
+
+    //       console.log("user in cart: ", this.props.context)
+    // }
+
+   
+    componentDidMount = () => {
+        console.log("user in cart: ", this.context )
+    }
+    
+    
     render(){
         return(
             <div class="card-body">
-            <CartProductList productsArray={cartArray} />
+            <UserProvider>
+           
+            <UserContext.Consumer>
+            {(context)=> (
+            <React.Fragment>   
+            <CartProductList context={this.props.context} productsArray={cartArray} />
                 <div className="pull-right">
                     <UpdateCartBtn items={cartArray}/>
-                </div>          
+                </div>
+                </React.Fragment> 
+            )}
+        </UserContext.Consumer>
+            </UserProvider>
             </div>
-             
-            
         )
     }
 }

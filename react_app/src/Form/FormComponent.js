@@ -1,60 +1,62 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 
-const productsArray = [
-    { 
-        title: 'specialized',
-        image: 'http://placehold.it/700x400',
-        price: 1000,
-        quantity: 3,
-        description: 'lorem pisum'
-      },
-      {
-        title: 'SuperAwesomeBike',
-        image: 'http://placehold.it/700x400',
-        price: 5000,
-        quantity: 1,
-        description: 'lorem pisum'
-      }
-    ];
-   
 class Form extends Component {
-    
-  
     constructor() {
         super();
         this.state = {
-          products: productsArray
+          products: []
         };
         this.handleSubmit = this.handleSubmit.bind(this);
       }
-    
+     
       handleSubmit(e) {
         e.preventDefault();
         const
         { products } = this.state,
-        id = this.refs.id.value,
-        title = this.refs.title.value,
-        image = this.refs.imageUrl.value,
+        product_No = this.refs.product_No.value,
+        image_url = this.refs.image_url.value,
         price = this.refs.price.value,
-        quantity = this.refs.quantity.value,
-        description = this.refs.description.value;
+        category = this.refs.category.value,
+        brand = this.refs.brand.value,
+        description = this.refs.description.value,
+        quantity = this.refs.quantity.value;
         this.setState({
           products: [...products, {
-            id,
-            title,
-            image,
+            product_No,
+            image_url,
             price,
+            category,
+            brand,
+            description,
             quantity,
-            description
           }]
-        }, () => {
-          this.refs.id.value = '';
-          this.refs.title.value = '';
-          this.refs.image.value = '';
+        },
+       
+        () => {
+          this.refs.product_No.value = '';
+          this.refs.image_url.value = '';
           this.refs.price.value = '';
-          this.refs.quantity.value = '';
+          this.refs.category.value = '';
+          this.refs.brand.value = '';
           this.refs.description.value = '';
+          this.refs.quantity.value = '';
         });
+        this.serverRequest = axios
+        .post('http://localhost:8090/api/products', {
+          product_No : this.refs.product_No.value,
+          image_url : this.refs.image_url.value,
+          price : this.refs.price.value,
+          category : this.refs.category.value,
+          brand : this.refs.brand.value,
+          description : this.refs.description.value,
+          quantity : this.refs.quantity.value
+        })
+        .then(function(response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        })
       }
     
       render() {
@@ -66,19 +68,20 @@ class Form extends Component {
             
             <form onSubmit={this.handleSubmit}>
               <div className="form-group">
-                <input style={style} type="number" ref="id" placeholder="id" className="form-control"  />
-                <input style={style} type="text" ref="title" placeholder="title" className="form-control"  />
-                <input style={style} type="text" defaultValue={'http://placehold.it/700x400'} ref="image" placeholder="image url" className="form-control" />
-                <input style={style} type="number" ref="price" placeholder="price" className="form-control" />
-                <input style={style} type="number" ref="quantity" placeholder="quantity" className="form-control" />
+                <input style={style} type="number" ref="product_No" placeholder="product number" className="form-control"  />
+                <input style={style} type="text" ref="image_url" placeholder="image title" className="form-control" />
+                <input style={style} type="number" min="0" step="0.01" ref="price" placeholder="price" className="form-control" />
+                <input style={style} type="text" ref="category" placeholder="product category" className="form-control" />
+                <input style={style} type="text" ref="brand" placeholder="title of the products brand" className="form-control"  />
                 <input style={style} type="text" ref="description" placeholder="description"className="form-control" />
+                <input style={style} type="number" ref="quantity" placeholder="quantity" className="form-control" />
               </div>
               <button className="btn btn-primary" type="submit">Save</button>
             </form>
-            <h2>Exsiting products:</h2>
+            <h2>Entered products:</h2>
             <ul>
               {products.map((product) => 
-               <li>{`Title: ${product.title} Image: ${product.imageUrl} Price: ${product.price} Quantity: ${product.quantity}`}</li>
+               <li>{`Title: ${product.brand} Image: ${product.image_url} Price: ${product.price} Quantity: ${product.quantity}`}</li>
               )}
             </ul>
           </div>

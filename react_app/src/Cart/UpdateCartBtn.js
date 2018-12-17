@@ -18,11 +18,7 @@ export default class UpdateCartBtn extends Component {
         }));
         console.log(this.state.total);
       };
-    // getTotal(){
-    //     const total = cartArray.reduce((i, {price}) => i + price, 0);
-        
-    //     console.log(total);
-    // }
+
    
     render() {
         console.log('importuoti pr: ', cartArray)
