@@ -5,39 +5,66 @@ import it.akademija.entity.User;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class CartDTO {
+public class CartProductDTO {
 
+    private String name;
 
-    private Set<CartProduct> cartProducts;
+    private BigDecimal price;
 
-    private User user;
+    private Integer quantity;
 
-    public CartDTO() {
+    private Integer productNo;
+
+    private Long cartProductId;
+
+    public CartProductDTO() {
+
     }
 
-    public CartDTO(Set<CartProduct> cartProducts) {
-
-        this.cartProducts = cartProducts;
+    public CartProductDTO(String name, BigDecimal price, Integer quantity, Integer productNo, Long cartProductId) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.productNo = productNo;
+        this.cartProductId = cartProductId;
     }
 
 
-    public Set<CartProduct> getCartProducts() {
-        return cartProducts;
+
+    public String getName() {
+        return name;
     }
 
-    public void setCartProducts(Set<CartProduct> cartProducts) {
-        this.cartProducts = cartProducts;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public User getUser() {
-        return user;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Integer getProductNo() {
+        return productNo;
+    }
+
+    public void setProductNo(Integer productNo) {
+        this.productNo = productNo;
+    }
+
+    public Long getCartProductId() {
+        return cartProductId;
+    }
+
+    public void setCartProductId(Long cartProductId) {
+        this.cartProductId = cartProductId;
     }
 }

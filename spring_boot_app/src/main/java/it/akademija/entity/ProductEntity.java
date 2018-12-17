@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,16 +20,15 @@ import java.util.Date;
 public class ProductEntity implements Serializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProductEntity.class);
-
+    @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-
-    @Id
-    @Column
+    @Column(unique = true)
     private Integer product_No;
     @Column
     private String image_url;
     @Column
+    @DecimalMin(value = "0.00", message = "Price cannot be negative number")
     private BigDecimal price;
     @Column
     private String category;
@@ -37,7 +38,9 @@ public class ProductEntity implements Serializable {
     private String description;
     @Column
     private Integer rating;
-    @Column
+
+    @Column(name = "quantity", nullable = false)
+    @Min(value = 0, message = "Quantity cannot be negative")
     private Integer quantity;
     @Column
     private boolean inStock;
@@ -166,5 +169,20 @@ public class ProductEntity implements Serializable {
     @Override
     public String toString() {
         return "ProductEntity{" + "id=" + id + ", image_url='" + image_url + '\'' + ", price=" + price + ", category='" + category + '\'' + ", brand='" + brand + '\'' + ", description='" + description + '\'' + ", rating=" + rating + ", quantity=" + quantity + ", inStock=" + inStock + ", dateCreated=" + dateCreated + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProductEntity product = (ProductEntity) o;
+
+        return id.equals(product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

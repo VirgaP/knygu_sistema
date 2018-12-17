@@ -2,6 +2,7 @@ package it.akademija.repository;
 
 import it.akademija.dao.UserDao;
 import it.akademija.dto.UserServiceDTO;
+import it.akademija.entity.Cart;
 import it.akademija.entity.User;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -34,10 +35,17 @@ public class DBUserDAO implements UserDao {
     }
 
     @Override
-    public void createUser(UserServiceDTO userServiceDTO) {
-        User user = new User(userServiceDTO.getId(), userServiceDTO.getUsername(),
-                userServiceDTO.getFirstName(), userServiceDTO.getLastName(), userServiceDTO.getEmail(), new Date());
+    public void createUser(UserServiceDTO userServiceDTO, Cart cart) {
+        User user = new User(
+                userServiceDTO.getId(),
+                userServiceDTO.getUsername(),
+                userServiceDTO.getFirstName(),
+                userServiceDTO.getLastName(),
+                userServiceDTO.getEmail(),
+                new Date());
+        user.setCart(cart);
         entityManager.persist(user);
+
     }
 
     @Override

@@ -3,6 +3,8 @@ package it.akademija.entity;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -17,10 +19,18 @@ public final class User implements Serializable {
     private String username;
     private String firstName;
     private String lastName;
+
+    @Column(name = "email", unique = true, nullable = false)
+    @Email(message = "*Please provide a valid Email")
+    @NotEmpty(message = "*Please provide an email")
     private String email;
     @Column(name="user_created_at", updatable = false)
     @CreationTimestamp
     private Date dateCreated;
+
+    @OneToOne()
+    @JoinColumn(name ="cart_id")
+    private Cart cart;
 
     public User(){
 
@@ -81,5 +91,13 @@ public final class User implements Serializable {
 
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 }

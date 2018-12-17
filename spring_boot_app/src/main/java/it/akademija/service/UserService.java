@@ -3,6 +3,7 @@ package it.akademija.service;
 import it.akademija.dto.UserDTO;
 import it.akademija.dao.UserDao;
 import it.akademija.dto.UserServiceDTO;
+import it.akademija.entity.Cart;
 import it.akademija.entity.User;
 import it.akademija.model.CreateUserCommand;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,13 @@ public class UserService {
                 cmd.getFirstName(),
                 cmd.getEmail()
                 );
-        userDao.createUser(userServiceDTO);
+
+        Cart cart = new Cart (
+                new Long(1)
+        );
+
+        userDao.createUser(userServiceDTO, cart);
+
     }
 
     @Transactional

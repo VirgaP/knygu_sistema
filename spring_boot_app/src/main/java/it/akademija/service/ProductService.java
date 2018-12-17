@@ -1,16 +1,26 @@
 package it.akademija.service;
 
+import io.swagger.models.auth.In;
 import it.akademija.dao.UserDao;
 import it.akademija.dto.ProductDTO;
+import it.akademija.entity.Cart;
+import it.akademija.entity.CartProduct;
 import it.akademija.entity.ProductEntity;
+import it.akademija.exceptions.ResourceNotFoundException;
 import it.akademija.model.CreateProductCommand;
-import it.akademija.model.CreateUserCommand;
+import it.akademija.repository.CartRepository;
+import it.akademija.repository.ProductPaginationRepo;
 import it.akademija.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -19,16 +29,34 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
 
+    private final static int PAGESIZE = 3;
+
     private ProductRepository productRepository;
+
+    @Autowired
+    private ProductPaginationRepo paginationRepo;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+    //jei reikes sukurti productlist new ProductEntity cia
 
     @Autowired
     public ProductService(@Qualifier("productrepo")ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
+
     @Transactional
     public List<CreateProductCommand> getProducts() {
-        List<CreateProductCommand> createUserCommandList = productRepository.findAll()
+        long count = productRepository.count();
+        int pageSize = 3;
+        long pages = count / pageSize;
+        List<CreateProductCommand> list = new ArrayList<>();
+        for (int i = 0; i < pages; i++){
+
+        list = productRepository
+                .findAll(PageRequest.of(i, pageSize, Sort.by("dateCreated").descending()))
                 .stream()
                 .map(productEntity -> new CreateProductCommand(
                         productEntity.getProduct_No(),
@@ -39,26 +67,25 @@ public class ProductService {
                         productEntity.getDescription(),
                         productEntity.getQuantity()))
                 .collect(Collectors.toList());
-
-                return createUserCommandList;
+        }
+        return list;
     }
 
-
     @Transactional
-    public CreateProductCommand findProduct(Integer product_No){
-
+    public ProductDTO findProduct(Integer product_No){
         ProductEntity productEntity = productRepository.getProductByNumber(product_No);
-        CreateProductCommand createProductCommand = new CreateProductCommand(
+        ProductDTO productDTO= new ProductDTO(
                 productEntity.getProduct_No(),
                 productEntity.getImage_url(),
                 productEntity.getPrice(),
                 productEntity.getBrand(),
                 productEntity.getDescription(),
                 productEntity.getCategory(),
-                productEntity.getQuantity()
+                productEntity.getRating()
         );
-        return createProductCommand;
+        return productDTO;
     }
+
 
     @Transactional
     public void createProduct(CreateProductCommand createProductCommand){
@@ -71,27 +98,35 @@ public class ProductService {
                          createProductCommand.getCategory(),
                          createProductCommand.getBrand(),
                          createProductCommand.getDescription(),
-                         new Integer(0),
+                         new Integer(1),
                          createProductCommand.getQuantity(),
-                         true,
+                         createProductCommand.getQuantity() > 0 ? true : false,
                          new Date()
                     );
                  productRepository.save(productEntity);
     }
 
-    public void updateProduct(Integer product_No){
-        ProductEntity productEntity = productRepository.getProductByNumber(product_No);
-//        ProductEntity productEntity = productRepository.findById(id).orElse(null);
-//        Optional<ProductEntity> productEntity = productRepository.findById(id);// use optional arba oerElse(null)
-        productRepository.save(productEntity);
+    @Transactional
+    public void updateProductWithException(CreateProductCommand cmd) throws ResourceNotFoundException{
+
+//        productRepository.findAll().stream().filter(productEntity -> productEntity.getProduct_No().equals(product_No)).findFirst().get();
+
+        ProductEntity productEntity = productRepository.getProductByNumber(cmd.getProduct_No());
+                productEntity.setProduct_No(cmd.getProduct_No());
+                productEntity.setImage_url(cmd.getImage_url());
+                productEntity.setPrice(cmd.getPrice());
+                productEntity.setBrand(cmd.getBrand());
+                productEntity.setDescription(cmd.getDescription());
+                productEntity.setCategory(cmd.getCategory());
+
+            productRepository.save(productEntity);
+
     }
 
     @Transactional
-    public void deleProduct(Integer product_No){
+    public void deleteProduct(Integer product_No){
         ProductEntity productEntity = productRepository.getProductByNumber(product_No);
         productRepository.delete(productEntity);
     }
-
-
 
 }

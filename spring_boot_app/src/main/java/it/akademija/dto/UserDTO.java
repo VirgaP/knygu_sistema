@@ -4,8 +4,8 @@ package it.akademija.dto;
 public class UserDTO {
 
     private String username;
-    private String firstName;
-    private String lastName;
+//    private String firstName;
+//    private String lastName;
     private String email;
 
     public UserDTO(){

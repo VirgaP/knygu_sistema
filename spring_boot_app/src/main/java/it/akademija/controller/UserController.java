@@ -39,6 +39,7 @@ public class UserController {
         return userService.getUserByUsername(username);
     }
 
+
     @RequestMapping(method = RequestMethod.POST)
     @ApiOperation(value="Create user", notes = "Creates user with data from client")
     @ResponseStatus(HttpStatus.CREATED)
