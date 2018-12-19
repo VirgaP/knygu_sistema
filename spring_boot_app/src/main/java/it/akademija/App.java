@@ -36,7 +36,7 @@ public class App extends SpringBootServletInitializer {
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("IT Akademija eshop REST Documentation")
+                .title("IT Akademija Knygu Sistema REST Documentation")
                 .version("0.0.1-SNAPSHOT")
                 .build();
     }

@@ -1,13 +1,12 @@
 package it.akademija.service;
 
 import it.akademija.dto.UserDTO;
-import it.akademija.dao.UserDao;
-import it.akademija.dto.UserServiceDTO;
-import it.akademija.entity.Cart;
 import it.akademija.entity.User;
 import it.akademija.model.CreateUserCommand;
+import it.akademija.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,44 +15,39 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
-    @Qualifier("dbUser")
-    private UserDao userDao; //atiduoda user is duomenu bazes
+    private UserRepository userRepository;
 
     @Transactional
-    public List<CreateUserCommand> getUsers() {
-        List<CreateUserCommand> createUserCommandList = userDao.getAllUsers()
+    public List<UserDTO> getUsers() {
+        return userRepository.findAll()
                 .stream()
-                .map(user -> new CreateUserCommand(user.getEmail(), user.getUsername(), user.getFirstName(), user.getLastName()))
+                .map(user -> new UserDTO(
+                       user.getUsername()))
                 .collect(Collectors.toList());
-        return  createUserCommandList;
     }
+
     @Transactional
-    public UserDTO getUserByUsername(String username){ //frontended grazins tik username ir email
-        User user = userDao.getUser(username);
-        UserDTO userDTO = new UserDTO(user.getUsername(), user.getEmail());
+    public UserDTO getUserByUsername(String username){ //frontended grazins tik username
+        User user = userRepository.findByUsername(username);
+        UserDTO userDTO = new UserDTO(user.getUsername());
         return userDTO;
     }
+
     @Transactional
     public void createUser(CreateUserCommand cmd) {
-        UserServiceDTO userServiceDTO = new UserServiceDTO(
-                cmd.getUsername() + (Math.floor(Math.random() * 100)+1),
-                cmd.getUsername(),
-                cmd.getLastName(),
-                cmd.getFirstName(),
-                cmd.getEmail()
-                );
-
-        Cart cart = new Cart (
-                new Long(1)
-        );
-
-        userDao.createUser(userServiceDTO, cart);
-
+        User user = new User();
+        user.setId(1L);
+        user.setUsername(cmd.getUsername());
+        userRepository.save(user);
     }
 
     @Transactional
     public void deleteUser(String username){
-        userDao.deleteUser(username);
+        User user = userRepository.findByUsername(username);
+        userRepository.delete(user);
     }
 }

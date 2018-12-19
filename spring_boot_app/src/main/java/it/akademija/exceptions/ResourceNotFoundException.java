@@ -1,6 +1,5 @@
 package it.akademija.exceptions;
 
-import it.akademija.entity.ProductEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

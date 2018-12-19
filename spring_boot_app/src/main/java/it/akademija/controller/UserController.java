@@ -4,7 +4,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import it.akademija.dto.UserDTO;
-import it.akademija.entity.User;
 import it.akademija.model.CreateUserCommand;
 import it.akademija.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +26,10 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @ApiOperation(value="Get list of users", notes="Returns regsitered users username, name, surname and email")
-    public List<CreateUserCommand> getUsers() {
+    @ApiOperation(value="Get list of users", notes="Returns list of regsitered users")
+    public List<UserDTO> getUsers() {
 
-        return userService.getUsers(); // skaitome is UserService ne UserDao
+        return userService.getUsers();
     }
 
     @RequestMapping(path = "/{username}", method = RequestMethod.GET)
