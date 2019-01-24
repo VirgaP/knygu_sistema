@@ -30,9 +30,7 @@ export class SingleInstitution extends Component {
       }
       
        showDeleteConfirm=()=> {
-        this.timeout = setTimeout(() => {
-          this.handleRemove()
-         }, 300);
+       
         confirm({
           title: 'Are you sure delete this item?',
           content: 'Some descriptions',
@@ -75,8 +73,6 @@ export class SingleInstitution extends Component {
       
 
       handleRemove (index) {
-
-        
        this.showDeleteConfirm();
         const payload = {title: index}
         var list = this.state.books;
