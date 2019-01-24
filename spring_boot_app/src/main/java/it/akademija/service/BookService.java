@@ -106,7 +106,6 @@ public class BookService {
     @Transactional
     public void createBook(RequestBook requestBook) { //some fields without assoc with inst maybe null, status, price
         Book book = new Book(
-                new Long(0),
                 requestBook.getTitle(),
                 requestBook.getAuthor(),
                 requestBook.getPageCount(),
@@ -126,7 +125,8 @@ public class BookService {
     @Transactional
     public void addBookToInstitution(String title, String institutionTitle){
         Book book = bookRepository.findByTitle(title);
-        book.addInstitution(institutionRepository.findByTitle(institutionTitle));
+//        book.addInstitution(institutionRepository.findByTitle(institutionTitle));
+
     }
 
     @Transactional
@@ -137,12 +137,12 @@ public class BookService {
 //                .map(book -> book.getInstitutions().remove(institution));
 
         Book book = bookRepository.findByTitle(title);
-        Set<Book> bookSet = institution.getBookSet();
+//        Set<Book> bookSet = institution.getBookSet();
 
-        if (!bookSet.contains(book)) {
-            throw new ResourceNotFoundException("the book is not found");
-        } else {
-            institution.removeBook(book);
-        }
+//        if (!bookSet.contains(book)) {
+//            throw new ResourceNotFoundException("the book is not found");
+//        } else {
+//            institution.removeBook(book);
+//        }
     }
 }

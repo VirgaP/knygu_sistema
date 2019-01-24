@@ -2,18 +2,24 @@ package it.akademija.service;
 
 import it.akademija.entity.Book;
 import it.akademija.entity.Institution;
-import it.akademija.enums.InstitutionCategory;
+import it.akademija.entity.InstitutionBook;
+import it.akademija.model.IncomingRequestBody;
+import it.akademija.model.RequestBook;
 import it.akademija.model.RequestInstitution;
+import it.akademija.model.RequestInstitutionBook;
+import it.akademija.repository.BookRepository;
+import it.akademija.repository.InstitutionBookRepository;
 import it.akademija.repository.InstitutionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +30,11 @@ public class InstitutionService {
 
     @Autowired
     private InstitutionRepository institutionRepository;
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private InstitutionBookRepository institutionBookRepository;
 
     @Transactional
     public List<Institution> getAll(){
@@ -33,13 +44,13 @@ public class InstitutionService {
     @Transactional
     public void createInstitution(RequestInstitution requestInstitution){
         Institution institution = new Institution(
-                requestInstitution.getTitle() + (Math.floor(Math.random() * 10)+1),
+//                new Long(0),
                 requestInstitution.getTitle(),
                 requestInstitution.getCity(),
                 requestInstitution.getImage(),
                 requestInstitution.getCategory(),
                 requestInstitution.getType(),
-                requestInstitution.getSubType()
+                requestInstitution.getSubtype()
         );
         institutionRepository.save(institution);
     }
@@ -49,8 +60,9 @@ public class InstitutionService {
         List<RequestInstitution> requestInstitutions = institutionRepository.findAll().stream()
                 .map(insitution -> new RequestInstitution(
                         insitution.getTitle(), insitution.getCity(), insitution.getImage(), insitution.getCategory(),
-                        insitution.getType(), insitution.getSubType()))
+                        insitution.getType(), insitution.getSubtype()))
                 .collect(Collectors.toList());
+
         return requestInstitutions;
     }
 
@@ -61,7 +73,7 @@ public class InstitutionService {
                 .stream()
                 .map(insitution -> new RequestInstitution(
                         insitution.getTitle(), insitution.getCity(), insitution.getImage(), insitution.getCategory(),
-                       insitution.getType(), insitution.getSubType()))
+                       insitution.getType(), insitution.getSubtype()))
                 .collect(Collectors.toList());
         return  requestInstitutions;
     }
@@ -73,7 +85,7 @@ public class InstitutionService {
                 .stream()
                 .map(insitution -> new RequestInstitution(
                         insitution.getTitle(), insitution.getCity(), insitution.getImage(), insitution.getCategory(),
-                        insitution.getType(), insitution.getSubType()))
+                        insitution.getType(), insitution.getSubtype()))
                 .collect(Collectors.toList());
         return  requestInstitutions;
     }
@@ -87,9 +99,10 @@ public class InstitutionService {
                 institution.getImage(),
                 institution.getCategory(),
                 institution.getType(),
-                institution.getSubType()
-//                institution.getBookSet()
+                institution.getSubtype(),
+                institution.getBooks()
         );
+
         return requestInstitution;
     }
 
@@ -99,20 +112,19 @@ public class InstitutionService {
 
                 institution.setTitle(requestInstitution.getTitle());
                 institution.setCity(requestInstitution.getCity());
-                institution.setImage(requestInstitution.getCity());
+                institution.setImage(requestInstitution.getImage());
                 institution.setCategory(requestInstitution.getCategory());
                 institution.setType(requestInstitution.getType());
-                institution.setSubType(requestInstitution.getSubType());
-                institution.setBookSet(requestInstitution.getBookSet());
+                institution.setSubtype(requestInstitution.getSubtype());
     }
 
     @Transactional
     public void deleteInstitution(String title){
         Institution institution = institutionRepository.findByTitle(title);
 
-        for (Book book : institution.getBookSet()) { // removing book from inverse side institution assocition and deleting institution
-            book.getInstitutions().remove(institution);
-        }
+//        for (Book book : institution.getBookSet()) { // removing book from inverse side institution assocition and deleting institution
+//            book.getInstitutions().remove(institution);
+//        }
         institutionRepository.delete(institution);
 
        // arba
@@ -121,9 +133,50 @@ public class InstitutionService {
 //        institutionRepository.delete(institution);
     }
 
-//    @InitBinder
-//    public void initBinder(final WebDataBinder webdataBinder) {
-//        webdataBinder.registerCustomEditor(InstitutionCategory.class, new InstitutionCategoryConverter());
-//    }
+    @Transactional
+    public void addBook(String title, IncomingRequestBody request){
+        Institution institution = institutionRepository.findByTitle(title);
+
+        Book book = bookRepository.findByTitle(request.getTitle());
+
+        InstitutionBook institutionBook= new InstitutionBook();
+
+        institutionBook.setBook(book);
+        institutionBook.setInstitution(institution);
+
+        institutionBook.setRegisteredDate(new Date());
+        institutionBook.setStatus(request.getStatus());
+        institutionBook.setPrice(request.getPrice());
+        institutionBook.setQuantity(request.getQuantity());
+
+        institutionBookRepository.save(institutionBook);
+
+
+        institution.addBook(institutionBook);
+        System.out.println("Size 1 " + institution.getBooks().size());
+
+        book.addInstitutionBook(institutionBook);
+        System.out.println("Size 2 " + book.getInstitutionBooks().size());
+//        bookRepository.save(book);
+//        institutionRepository.save(institution);
+
+    }
+
+    @Transactional
+   public void removeBook(String title, RequestBook request){
+        Institution institution = institutionRepository.findByTitle(title);
+        Book book = bookRepository.findByTitle(request.getTitle());
+
+        InstitutionBook institutionBook = new InstitutionBook();
+        institutionBook.setBook(book);
+        institutionBook.setInstitution(institution);
+
+        institutionBookRepository.delete(institutionBook);
+
+        institution.getBooks().remove(institutionBook);
+        book.getInstitutionBooks().remove(institutionBook);
+
+
+    }
 
 }

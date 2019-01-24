@@ -1,13 +1,16 @@
 package it.akademija.model;
 
 import it.akademija.entity.Book;
+import it.akademija.entity.InstitutionBook;
 import it.akademija.enums.InstitutionCategory;
 import it.akademija.enums.InstitutionType;
+import jdk.internal.dynalink.linker.LinkerServices;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public final class RequestInstitution {
@@ -18,9 +21,6 @@ public final class RequestInstitution {
 
     private String image;
 
-//    private InstitutionCategory category;
-//
-//    private InstitutionType type;
 
     private String category;
 
@@ -28,22 +28,30 @@ public final class RequestInstitution {
 
     private String subtype;
 
-    private Set<Book> bookSet;
-
-    public RequestInstitution() {
-    }
+    private List<InstitutionBook> institutionBooks;
 
     public RequestInstitution(String title, String city, String image, String category, String type, String subtype) {
         this.title = title;
         this.city = city;
         this.image = image;
-//        this.category = category;
-//        this.type = type;
+        this.category = category;
+        this.type = type;
         this.subtype = subtype;
-//        this.bookSet = bookSet;
     }
 
 
+    public RequestInstitution(String title, String city, String image, String category, String type, String subtype, List<InstitutionBook> institutionBooks) {
+        this.title = title;
+        this.city = city;
+        this.image = image;
+        this.category = category;
+        this.type = type;
+        this.subtype = subtype;
+        this.institutionBooks = institutionBooks;
+    }
+
+    public RequestInstitution() {
+    }
 
     public String getTitle() {
         return title;
@@ -85,19 +93,19 @@ public final class RequestInstitution {
         this.type = type;
     }
 
-    public String getSubType() {
+    public String getSubtype() {
         return subtype;
     }
 
-    public void setSubType(String subType) {
-        this.subtype = subType;
+    public void setSubtype(String subType) {
+        this.subtype = subtype;
     }
 
-    public Set<Book> getBookSet() {
-        return bookSet;
+    public List<InstitutionBook> getInstitutionBooks() {
+        return institutionBooks;
     }
 
-    public void setBookSet(Set<Book> bookSet) {
-        this.bookSet = bookSet;
+    public void setInstitutionBooks(List<InstitutionBook> institutionBooks) {
+        this.institutionBooks = institutionBooks;
     }
 }

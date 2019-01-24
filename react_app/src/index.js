@@ -5,16 +5,17 @@ import * as serviceWorker from './serviceWorker';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Switch, Redirect, Route } from 'react-router';
 import { BrowserRouter, Link } from 'react-router-dom';
-import NavbarContainer from './Layout/NavbarContainer';
-import Nowhere from './Layout/Nowhere';
-import ProductsList from './Layout/MainPage/Card/ProductsListContainer';
-import CartPage from './Cart/CartPage';
+import NavbarContainer from './NavbarContainer';
+import Nowhere from './Nowhere';
+import BookForm from './BookFormContainer';
 import Form from './Form/FormComponent';
+import Registration from './Registration';
 import HomePage from './HomePage';
-import cardList from './Layout/MainPage/Card/CardListComponent';
-import Card from './Layout/MainPage/Card/Card';
-import CardContainer from './Layout/MainPage/Card/CardContainer';
-import Register from './Layout/MainPage/Register';
+import SingleBook from './SingleBook';
+import SingleInstitution from './SingleInstitution';
+import InstitutionList from './InstitutionListContainer';
+import BookListContainer from './BookListContainer';
+import EditInstitution from './EditInstitution';
 
 
 ReactDOM.render((
@@ -22,12 +23,15 @@ ReactDOM.render((
         <NavbarContainer>
             <Switch>
                 <Route exact path='/' component={HomePage}/>
-                <Route path="/products" component={ProductsList}/>
-                <Route path="/cart/:username" render={(props) => <CartPage {...props} />}/> 
+                <Route path='/institutions' component={InstitutionList}/>
+                <Route path="/books" component={BookForm}/>
+                <Route path="/booksList" component={BookListContainer}/>
+                {/* <Route path="/cart/:username" render={(props) => <CartPage {...props} />}/>  */}
                 <Route path="/admin" component={Form}/>
-                {/* <Route path="/product/:productId" component={Card}/> */}
-                <Route path="/register" component={Register}/>
-                <Route path="/product/:product_No" render={(props) => <CardContainer {...props} />}/> 
+                <Route path="/institution/:title" render={(props) => <SingleInstitution {...props} />}/> 
+                <Route path="/edit/institution/:title" component={EditInstitution} render={(props) => <EditInstitution {...props} /> }/>   
+                <Route path="/register" component={Registration}/>
+                <Route path="/book/:title" render={(props) => <SingleBook {...props} />}/>                 
                 <Route path="*" component={Nowhere}/>   
             </Switch>
         </NavbarContainer>

@@ -17,7 +17,6 @@ public final class RequestBook {
 
     private String image;
 
-    private Set<Institution> institutions;
 
     public RequestBook(String title, String author, Integer pageCount, String image) {
         this.title = title;
@@ -29,12 +28,8 @@ public final class RequestBook {
     public RequestBook() {
     }
 
-    public Set<Institution> getInstitutions() {
-        return institutions;
-    }
-
-    public void setInstitutions(Set<Institution> institutions) {
-        this.institutions = institutions;
+    public RequestBook(String title) {
+        this.title = title;
     }
 
     public String getTitle() {

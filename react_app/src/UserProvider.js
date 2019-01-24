@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import UserContext from './UserContext';
 import axios from 'axios';
 
-// const UserContext = React.createContext();
 
 export default class UserProvider extends Component {
     state = {
@@ -10,11 +9,11 @@ export default class UserProvider extends Component {
     }
 
   componentDidMount = () => {
-    axios.get('http://localhost:8090/api/users/') //retrieve 1st registered user username from DB
+    axios.get('http://localhost:8099/api/users/') //retrieve last registered user username from DB
     .then(result => {
-    var idx = result.data.length - 1 - result.data.slice().reverse().findIndex( (o) => o.firstName);//finds index of last username from data array 
+    var idx = result.data.length - 1 - result.data.slice().reverse().findIndex( (o) => o.username);//finds index of last username from data array 
     console.log("index:", idx )
-    const username = result.data[idx].firstName
+    const username = result.data[idx].username
     this.setState({username});
     })
     .catch(function (error) {

@@ -1,24 +1,23 @@
 package it.akademija.entity;
 
-import it.akademija.enums.InstitutionCategory;
-import it.akademija.enums.InstitutionType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
-public class Institution implements Serializable  {
+public class Institution {
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name="institution_id", updatable = false, nullable = false)
-    private String id;
 
-    @NaturalId
-    @Column
+    private Long id;
+
+
     private String title;
 
     @Column
@@ -26,14 +25,6 @@ public class Institution implements Serializable  {
 
     @Column
     private String image;
-//
-//    @Enumerated(EnumType.STRING)
-//    @Column(length = 6)
-//    private InstitutionCategory category;
-//
-//    @Enumerated(EnumType.STRING)
-//    @Column(length = 9)
-//    private InstitutionType type;
 
     private String category;
 
@@ -41,15 +32,14 @@ public class Institution implements Serializable  {
 
     private String subtype;
 
-    @ManyToMany(mappedBy="institutions", cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY) //maybe change to EAGER
-    private Set<Book> books = new HashSet<Book>();
+
+    private List<InstitutionBook> institutionBooks = new ArrayList<>();
 
 
     public Institution() {
     }
 
-    public Institution(String id, String title, String city, String image, String category, String type, String subtype) {
-        this.id = id;
+    public Institution(String title, String city, String image, String category, String type, String subtype) {
         this.title = title;
         this.city = city;
         this.image = image;
@@ -58,34 +48,39 @@ public class Institution implements Serializable  {
         this.subtype = subtype;
 
     }
-
-
-    public void addBook(Book b) {
-        this.books.add(b);
-        b.getInstitutions().add(this);
+//    @JsonIgnore
+    @JsonBackReference
+    @OneToMany(
+            mappedBy = "primaryKey.institution",
+            cascade = CascadeType.MERGE,
+            orphanRemoval = true
+    )
+    public List<InstitutionBook> getBooks() {
+        return institutionBooks;
     }
 
-    public void removeBook(Book b) {
-        this.books.remove(b);
-        b.getInstitutions().remove(this);
+    public void setBooks(List<InstitutionBook> institutionBooks) {
+        this.institutionBooks = institutionBooks;
     }
 
-
-    @PreRemove
-    private void removeInstitutionFromBooks() {
-        for (Book b : books) {
-            b.getInstitutions().remove(this);
-        }
+    public void addInstitutionBook(InstitutionBook institutionBook){
+        this.institutionBooks.add(institutionBook);
     }
 
-    public String getId() {
+    @Id
+//    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(updatable = false, nullable = false)
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
+    @NaturalId
+    @Column(updatable = true, nullable = false)
     public String getTitle() {
         return title;
     }
@@ -126,33 +121,53 @@ public class Institution implements Serializable  {
         this.type = type;
     }
 
-    public String getSubType() {
+    public String getSubtype() {
         return subtype;
     }
 
-    public void setSubType(String subType) {
-        this.subtype = subType;
+    public void setSubtype(String subtype) {
+        this.subtype = subtype;
     }
+//    public void addBook(Book book) {
+//        InstitutionBook institutionBook = new InstitutionBook(this, book);
+//        institutionBooks.add(institutionBook);
+//        book.getInstitutions().add(institutionBook);
+//    }
+//
+//    public void removeBook(Book book) {
+//        for (Iterator<InstitutionBook> iterator = institutionBooks.iterator();
+//             iterator.hasNext(); ) {
+//            InstitutionBook institutionBook = iterator.next();
+//
+//            if (institutionBook.getInstitution().equals(this) &&
+//                    institutionBook.getBook().equals(book)) {
+//                iterator.remove();
+//                institutionBook.getBook().getInstitutions().remove(institutionBook);
+//                institutionBook.setInstitution(null);
+//                institutionBook.setBook(null);
+//            }
+//        }
+//    }
 
-    public Set<Book> getBookSet() {
-        return books;
+    public void addBook(InstitutionBook book){
+        this.institutionBooks.add(book);
     }
-
-    public void setBookSet(Set<Book> bookSet) {
-        this.books = bookSet;
-    }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
         Institution institution = (Institution) o;
-        return Objects.equals(title, institution.title);
+        return Objects.equals(id, institution.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title);
+        return Objects.hash(id);
     }
+
+
 }

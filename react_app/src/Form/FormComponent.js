@@ -1,97 +1,133 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+
 
 class Form extends Component {
     constructor() {
         super();
         this.state = {
-          products: []
+          institutions: [],
+          redirect: false,
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+      }
+      setRedirect = () => {
+        this.setState({
+          redirect: true
+        })
+      }
+      renderRedirect = () => {
+        if (this.state.redirect) {
+          return <Redirect to='/' />
+        }
       }
      
       handleSubmit(e) {
         e.preventDefault();
         const
-        { products } = this.state,
-        product_No = this.refs.product_No.value,
-        image_url = this.refs.image_url.value,
-        price = this.refs.price.value,
-        category = this.refs.category.value,
-        brand = this.refs.brand.value,
-        description = this.refs.description.value,
-        quantity = this.refs.quantity.value;
+        { institutions } = this.state,
+        title = this.refs.title.value,
+        city = this.refs.city.value,
+        image = this.refs.image.value,
+        category = this.selectCategory.input,
+        type = this.selectType.input,
+        subtype = this.selectSubtype.input
         this.setState({
-          products: [...products, {
-            product_No,
-            image_url,
-            price,
+          products: [...institutions, {
+            title,
+            city,
+            image,
             category,
-            brand,
-            description,
-            quantity,
+            type,
+            subtype,
           }]
         },
        
         () => {
-          this.refs.product_No.value = '';
-          this.refs.image_url.value = '';
-          this.refs.price.value = '';
-          this.refs.category.value = '';
-          this.refs.brand.value = '';
-          this.refs.description.value = '';
-          this.refs.quantity.value = '';
+          this.refs.title.value = '';
+          this.refs.city.value = '';
+          this.refs.image.value = '';
+          this.selectCategory.input = '';
+          this.selectType.input = '';
+          this.selectSubtype.input = '';
         });
         this.serverRequest = axios
-        .post('http://localhost:8090/api/products', {
-          product_No : this.refs.product_No.value,
-          image_url : this.refs.image_url.value,
-          price : this.refs.price.value,
-          category : this.refs.category.value,
-          brand : this.refs.brand.value,
-          description : this.refs.description.value,
-          quantity : this.refs.quantity.value
+        .post('http://localhost:8099/api/institutions', {
+          title : this.refs.title.value,
+          city : this.refs.city.value,
+          image : this.refs.image.value,
+          category : this.selectCategory.value,
+          type : this.selectType.value,
+          subtype : this.selectSubtype.value,
         })
         .then(function(response) {
             console.log(response);
+            console.log('Send this in a POST request:', institutions);
         }).catch(function (error) {
             console.log(error);
         })
+
+        this.setRedirect();
       }
     
       render() {
-        const { products } = this.state;
-        console.log('produktai',this.state.products);
+       
         return (   
           <div className="container">
-            <h2>Add new product</h2>
-            
+            <h2>Add new institution</h2>
             <form onSubmit={this.handleSubmit}>
-              <div className="form-group">
-                <input style={style} type="number" ref="product_No" placeholder="product number" className="form-control"  />
-                <input style={style} type="text" ref="image_url" placeholder="image title" className="form-control" />
-                <input style={style} type="number" min="0" step="0.01" ref="price" placeholder="price" className="form-control" />
-                <input style={style} type="text" ref="category" placeholder="product category" className="form-control" />
-                <input style={style} type="text" ref="brand" placeholder="title of the products brand" className="form-control"  />
-                <input style={style} type="text" ref="description" placeholder="description"className="form-control" />
-                <input style={style} type="number" ref="quantity" placeholder="quantity" className="form-control" />
-              </div>
+            <div className="form-group has-error form-group has-success">
+              <label className="control-label" for="inputError1">Title</label>
+              <input type="text" ref="title" placeholder="Title of your institution" className="form-control" id="inputError1" required/>
+            </div>
+            <div className="form-group has-error form-group has-success">
+              <label className="control-label" for="inputError1">City</label>
+              <input type="text" ref="city" placeholder="City of your institution" className="form-control" id="inputError1" required/>
+            </div>
+            <div className="form-group has-error form-group has-success">
+              <label className="control-label" for="inputError1">Image</label>
+              <input type="text" ref="image" placeholder="Image name" className="form-control" id="inputError1" required/>
+            </div>
+            <div>
+                <label className="control-label">Select category of your institution</label>
+                  <select ref={(input) => this.selectCategory = input} className="form-control" id="ntype" required>
+                    <option value = "">None</option>
+                    <option value = "public">Public</option>
+                    <option value = "private">Private</option>
+                </select>
+            </div>
+            <div>
+                <label className="control-label">Select type of your institution</label>
+                  <select ref={(input) => this.selectType = input} className="form-control" id="ntype" required>
+                    <option value = "">None</option>
+                    <option value = "library">Library</option>
+                    <option value = "bookstore">Bookstore</option>
+                    <option value = "book_archive">Book archive</option>
+                    <option value = "book_rental">Book rental</option>
+                </select>
+            </div>
+            <div>
+                <label className="control-label">Select subtype of your institution</label>
+                  <select ref={(input) => this.selectSubtype = input} className="form-control" id="ntype" required>
+                    <option value = "">None</option>
+                    <option value = "children">Children</option>
+                    <option value = "adults">Adults</option>
+                    <option value = "open">Open</option>
+                    <option value = "closed">Closed</option>
+                </select>
+            </div>
+                
+            {this.renderRedirect()}
               <button className="btn btn-primary" type="submit">Save</button>
             </form>
-            <h2>Entered products:</h2>
-            <ul>
-              {products.map((product) => 
-               <li>{`Title: ${product.brand} Image: ${product.image_url} Price: ${product.price} Quantity: ${product.quantity}`}</li>
-              )}
-            </ul>
+          
           </div>
         ) 
       }
 
 }
-const style = {
-  margin:'0 0 20px 0'
-}
+
 export default Form;
 
 //updater method

@@ -1,33 +1,22 @@
 package it.akademija.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
-
-//Owning side
 
 @Entity
-public class Book implements Serializable {
+public class Book {
 
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(updatable = false, nullable = false)
     private Long id;
 
-    @ManyToMany
-    @JoinTable(name = "books_institutions",
-            joinColumns = { @JoinColumn(name = "fk_book") },
-            inverseJoinColumns = { @JoinColumn(name = "fk_institution") })
+    private List<InstitutionBook> institutionBooks = new ArrayList<>();
 
-    private Set<Institution> institutions = new HashSet<>();
-
-    @Column
     private String title;
 
     @Column
@@ -39,15 +28,8 @@ public class Book implements Serializable {
     @Column
     private String image;
 
-//    private BigDecimal price;
-//
-//    private Integer quantity;
-//
-//    private String status;
 
-
-    public Book(Long id, String title, String author, Integer pageCount, String image) {
-        this.id = id;
+    public Book(String title, String author, Integer pageCount, String image) {
         this.title = title;
         this.author = author;
         this.pageCount = pageCount;
@@ -57,18 +39,28 @@ public class Book implements Serializable {
     public Book() {
     }
 
-
-    public void addInstitution(Institution inst) {
-        this.institutions.add(inst);
-        inst.getBookSet().add(this);
+    public Book(String title) {
+        this.title = title;
     }
 
-    public void removeInstitution(Institution inst) {
-        this.institutions.remove(inst);
-        inst.getBookSet().remove(this);
+    @JsonIgnore
+    @OneToMany(mappedBy = "primaryKey.book",
+            cascade = CascadeType.MERGE)
+    public List<InstitutionBook> getInstitutionBooks() {
+        return institutionBooks;
     }
 
+    public void setInstitutionBooks(List<InstitutionBook> institutionBooks) {
+        this.institutionBooks = institutionBooks;
+    }
 
+    public void addInstitutionBook(InstitutionBook institutionBook){
+        this.institutionBooks.add(institutionBook);
+    }
+
+    @Id
+    @GeneratedValue
+    @Column(updatable = false, nullable = false)
     public Long getId() {
         return id;
     }
@@ -77,14 +69,9 @@ public class Book implements Serializable {
         this.id = id;
     }
 
-    public Set<Institution> getInstitutions() {
-        return institutions;
-    }
 
-    public void setInstitutions(Set<Institution> institutions) {
-        this.institutions = institutions;
-    }
-
+    @Column(updatable = true, nullable = false)
+    @NaturalId
     public String getTitle() {
         return title;
     }
@@ -117,17 +104,18 @@ public class Book implements Serializable {
         this.image = image;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Book)) return false;
-        return id != null && id.equals(((Book) o).id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 31;
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Book book = (Book) o;
+//        return Objects.equals(title, book.title);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(title);
+//    }
 
 
 }

@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 // import './App.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {cartArray} from '../Cart/CartBody';
 import UserProvider from './UserProvider';
 import UserContext from './UserContext';
+import InstitutionList from './InstitutionListContainer';
+import axios from 'axios';
 
 
 
@@ -16,12 +17,12 @@ class Navbar extends Component {
     super(props)
   
     this.state = {
-       products:cartArray
+      institutions:[]
     }
   }
+  
   // goProducts = (props) => this.props.history.push("products");
   render() {
-    
     return (    
         // <!-- Navigation -->
         <UserProvider>
@@ -39,22 +40,26 @@ class Navbar extends Component {
                     <span className="sr-only">(current)</span>
                 </li>
                 <li className="nav-item">
-        <UserContext.Consumer>
+        {/* <UserContext.Consumer>
         {(context)=> (
             <Link className="nav-link" to={`/cart/${context}`}>Cart<FontAwesomeIcon icon="shopping-cart"/>
             </Link> 
         )}
-        </UserContext.Consumer>
+        </UserContext.Consumer> */}
               </li>
                 <li className="nav-item">
                 <Link className="nav-link" to='/register'>Register</Link>
                 </li>
                 <li className="nav-item">
-                <Link className="nav-link" to='/products'>Products</Link> 
+
+                <Link className="nav-link" to='/booksList'>Books</Link>
+                </li>
+                <li className="nav-item">
+                <Link className="nav-link" to='/books'>Add new book</Link> 
                   {/* <a className="nav-link" onClick={this.goProducts} href="/products">Products</a> */}
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to='/admin'>Admin form</Link> 
+                  <Link className="nav-link" to='/admin'>Add institution</Link> 
                 </li>
               </ul>
             </div>

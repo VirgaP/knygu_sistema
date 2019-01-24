@@ -4,7 +4,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import it.akademija.dto.BookInstitutionDTO;
 import it.akademija.entity.Institution;
+import it.akademija.model.IncomingRequestBody;
+import it.akademija.model.RequestBook;
 import it.akademija.model.RequestInstitution;
+import it.akademija.model.RequestInstitutionBook;
 import it.akademija.service.BookService;
 import it.akademija.service.InstitutionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +88,28 @@ public class InstitutionController {
     public List<BookInstitutionDTO> getAllBooksByInstitution(
             @PathVariable final String institutionTitle) {
         return bookService.getBooksByInstitution(institutionTitle);
+    }
+
+
+    @RequestMapping(path = "/{title}", method = RequestMethod.POST)
+    @ApiOperation(value = "Add book", notes = "Add book to institution")
+    @ResponseStatus(HttpStatus.OK)
+    void addBook(
+            @ApiParam(value = "Institution data", required = true)
+            @PathVariable final String title,
+            @RequestBody IncomingRequestBody request
+            )
+    {
+        institutionService.addBook(title, request);
+    }
+
+    @RequestMapping(path = "/{title}/removeBook", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation(value = "Delete institution", notes = "Deletes book form institution books collection")
+    void removeBook(@PathVariable final String title,
+                    @RequestBody RequestBook requestBook) {
+        institutionService.removeBook(title, requestBook);
+
     }
 
 }

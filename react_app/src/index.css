@@ -8,6 +8,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.user_form input{
+  margin: 0 0 20px 0;
+}
+.book_form {
+  background-color: aquamarine;
+  margin-bottom: 70px;
+  padding: 20px;
+}
+.user_form{
+  margin-top: 150px;
+  margin-bottom: 150px;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
@@ -19,6 +31,7 @@ code {
     padding-top: 56px;
   }
 }
+
 
 .quantity {
   float: left;
